@@ -104,7 +104,7 @@ export default {
 }
 .video {
 	width: 100%;
-	height: 100%;
+	height: 80vh;
 	object-fit: cover;
 }
 </style>
