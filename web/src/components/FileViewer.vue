@@ -23,6 +23,7 @@
 			<v-col md="8" lg="6" class="pt-0 pb-0">
 				<v-btn
 					v-text="$t('upload')"
+					depressed
 					color="primary"
 					@click="showUploadDialog = true"
 				></v-btn>
@@ -65,7 +66,7 @@
 								download
 								@click.stop
 							>
-								<v-icon color="black">
+								<v-icon color="primary">
 									mdi-file-download
 								</v-icon>
 							</v-btn>

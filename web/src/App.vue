@@ -10,13 +10,13 @@
 			</v-toolbar-title>
 			<v-toolbar-items>
 				<v-menu offset-y v-if="drives.length">
-					<template v-slot:activator="{ on }">
+					<!-- <template v-slot:activator="{ on }">
 						<v-btn text v-on="on" class="text-none">
 							<v-icon>mdi-cloud</v-icon>&nbsp;{{
 								currentDrive.text
 							}}<v-icon>mdi-menu-down</v-icon>
 						</v-btn>
-					</template>
+					</template> -->
 					<v-list>
 						<v-list-item
 							v-for="(item, index) in drives"
@@ -29,10 +29,17 @@
 						</v-list-item>
 					</v-list>
 				</v-menu>
+				<v-list color="primary" v-if="$store.state.fileName">
+					<v-list-item>
+						<v-list-item-title>{{
+							$store.state.fileName
+						}}</v-list-item-title>
+					</v-list-item>
+				</v-list>
 			</v-toolbar-items>
 			<portal-target name="navbar" slim />
 			<v-spacer />
-			<v-toolbar-items>
+			<!-- <v-toolbar-items>
 				<v-btn
 					text
 					class="text-none hidden-sm-and-down"
@@ -42,7 +49,7 @@
 				>
 					<v-icon>mdi-github-circle</v-icon>&nbsp;GitHub</v-btn
 				>
-			</v-toolbar-items>
+			</v-toolbar-items> -->
 		</v-app-bar>
 
 		<v-content> <router-view /> </v-content>
@@ -61,7 +68,7 @@ export default {
 		return {
 			drives: [],
 			value: {},
-			showAuthInput: false,
+			showAuthInput: false
 		}
 	},
 	computed: {
@@ -109,3 +116,10 @@ export default {
 	components: { LoginDialog },
 }
 </script>
+<style>
+.v-toolbar__content {
+	margin: 0 auto !important;
+	flex: 0 0 50%;
+	max-width: 50%;
+}
+</style>

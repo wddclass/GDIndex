@@ -6,11 +6,17 @@
 					<v-btn depressed color="primary" @click="reLoad"
 						>重新加载</v-btn
 					>
-					<v-btn depressed color="primary" @click="dp.volume(0, true, false)">静音</v-btn>
-					<v-btn depressed color="primary" @click="dp.volume(1, true, false)">取消静音</v-btn>
 					<v-btn
 						depressed
 						color="primary"
+						v-if="dp"
+						@click="mute = !mute"
+						>{{ mute ? '取消静音' : '静音' }}</v-btn
+					>
+					<v-btn
+						depressed
+						color="primary"
+						v-if="dp"
 						@click="dp.fullScreen.request('web')"
 						>网页全屏</v-btn
 					>
@@ -52,8 +58,14 @@ export default {
 	data() {
 		return {
 			dp: null,
+			mute: false,
 			dpOptions: {},
 		}
+	},
+	watch: {
+		mute(val) {
+			this.dp.volume(val ? 0 : 1, true, false)
+		},
 	},
 	mounted() {
 		this.init()
@@ -71,40 +83,51 @@ export default {
 			this.dpOptions.video = {
 				url: url.href,
 			}
+			let num = url.href.lastIndexOf('/') + 1
+			let name = url.href.substring(num)
+			let fileName = decodeURI(name)
+			this.$store.commit('SET_fileName', fileName)
 			// 字幕
-			const srtUrl = new URL(url)
-			srtUrl.pathname = pathSansExt + '.srt'
-			const hasSrt = await checkExists(srtUrl)
-			if (hasSrt) {
-				const srt = await api.get(srtUrl).text()
-				const blob = new Blob([srt2vtt(srt)], { type: 'text/vtt' })
-				const subUrl = URL.createObjectURL(blob)
-				this.dpOptions.subtitle = {
-					url: subUrl,
-				}
-			}
+			// const srtUrl = new URL(url)
+			// srtUrl.pathname = pathSansExt + '.srt'
+			// const hasSrt = await checkExists(srtUrl)
+			// if (hasSrt) {
+			// 	const srt = await api.get(srtUrl).text()
+			// 	const blob = new Blob([srt2vtt(srt)], { type: 'text/vtt' })
+			// 	const subUrl = URL.createObjectURL(blob)
+			// 	this.dpOptions.subtitle = {
+			// 		url: subUrl,
+			// 	}
+			// }
 			this.dp = new DPlayer(this.dpOptions)
 		},
 		reLoad() {
 			this.dp.destroy()
+			this.dp = null
 			this.init()
 		},
 	},
 	beforeDestroy() {
 		this.dp.destroy()
+		this.$store.commit('SET_fileName', null)
 	},
 }
 </script>
 <style scoped>
 .action-bar {
-	margin-bottom: 20px;
+	margin-bottom: 10px;
 }
-.action-bar button + button {
-	margin-left: 10px;
+.action-bar button {
+	margin-right: 15px;
+	margin-bottom: 5px;
+	min-width: 95px !important;
 }
 .video {
 	width: 100%;
-	height: 80vh;
+	max-height: 80vh;
 	object-fit: cover;
+}
+.dplayer-fulled {
+	max-height: 100vh;
 }
 </style>
